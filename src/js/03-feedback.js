@@ -4,17 +4,19 @@ const form = document.querySelector('.feedback-form');
 const localStorageKey = 'feedback-form-state';
 
 const updateLocalStorageThrottled = throttle (() => {
-    const email = form.el.email.value;
-    const message = form.el.message.value;
-    const data = {email, message};
+
+    const data = {email: form.email.value, message: form.message.value};
     localStorage.setItem(localStorageKey, JSON.stringify(data));}, 500);
 
     form.addEventListener('input', () => {
         updateLocalStorageThrottled();
     });
+const {email, message} = localStorage.getItem(localStorageKey)? JSON.parse(localStorage.getItem(localStorageKey)): {email: "", message:""};
 
-    form.el.email.value = localStorage.getItem(localStorageKey) ?? "";
-    form.el.message.value = localStorage.getItem(localStorageKey) ?? "";
+    form.email.value = email;
+    form.email.placeholder = "valid email address";
+    form.message.value = message;
+    form.message.placeholder = "Write your feedback";
 
     form.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -26,14 +28,14 @@ const updateLocalStorageThrottled = throttle (() => {
                 console.log("Feedback submitted:");
                 console.log("Email:", email);
                 console.log("Message:", message);
-
+console.log({email, message});
             } catch (error) {
                 console.error('Error parsing stored data:', error);
             }
         }
         localStorage.removeItem(localStorageKey);
         form.reset();
-    })
+    });
 
     
 
